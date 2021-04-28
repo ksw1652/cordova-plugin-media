@@ -370,8 +370,8 @@ BOOL keepAvAudioSessionAlwaysActive = NO;
                     bPlayAudioWhenScreenIsLocked = [playAudioWhenScreenIsLocked boolValue];
                 }
 
-                NSString* sessionCategory = bPlayAudioWhenScreenIsLocked ? AVAudioSessionCategoryPlayback : AVAudioSessionCategorySoloAmbient;
-                [self.avSession setCategory:sessionCategory error:&err];
+                [self.avSession setCategory:AVAudioSessionCategoryPlayAndRecord error:&err];
+                [self.avSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
                 if (![self.avSession setActive:YES error:&err]) {
                     // other audio with higher priority that does not allow mixing could cause this to fail
                     NSLog(@"Unable to play audio: %@", [err localizedFailureReason]);
@@ -793,9 +793,6 @@ BOOL keepAvAudioSessionAlwaysActive = NO;
         [self onStatus:MEDIA_ERROR mediaId:mediaId param:
           [self createMediaErrorWithCode:MEDIA_ERR_DECODE message:nil]];
     }
-    if (! keepAvAudioSessionAlwaysActive && self.avSession && ! [self isPlayingOrRecording]) {
-        [self.avSession setActive:NO error:nil];
-    }
 }
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer*)player successfully:(BOOL)flag
@@ -815,18 +812,12 @@ BOOL keepAvAudioSessionAlwaysActive = NO;
         [self onStatus:MEDIA_ERROR mediaId:mediaId param:
             [self createMediaErrorWithCode:MEDIA_ERR_DECODE message:nil]];
     }
-     if (! keepAvAudioSessionAlwaysActive && self.avSession && ! [self isPlayingOrRecording]) {
-         [self.avSession setActive:NO error:nil];
-     }
 }
 
 -(void)itemDidFinishPlaying:(NSNotification *) notification {
     // Will be called when AVPlayer finishes playing playerItem
     NSString* mediaId = self.currMediaId;
 
-     if (! keepAvAudioSessionAlwaysActive && self.avSession && ! [self isPlayingOrRecording]) {
-         [self.avSession setActive:NO error:nil];
-     }
     [self onStatus:MEDIA_STATE mediaId:mediaId param:@(MEDIA_STOPPED)];
 }
 
