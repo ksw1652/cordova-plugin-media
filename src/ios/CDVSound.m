@@ -674,10 +674,11 @@ BOOL keepAvAudioSessionAlwaysActive = NO;
                 [audioFile.recorder stop];
                 audioFile.recorder = nil;
             }
+
             // get the audioSession and set the category to allow recording when device is locked or ring/silent switch engaged
             if ([weakSelf hasAudioSession]) {
                 if (![weakSelf.avSession.category isEqualToString:AVAudioSessionCategoryPlayAndRecord]) {
-                    [weakSelf.avSession setCategory:AVAudioSessionCategoryRecord error:nil];
+                    [weakSelf.avSession setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionMixWithOthers error:nil];
                 }
 
                 if (![weakSelf.avSession setActive:YES error:&error]) {
