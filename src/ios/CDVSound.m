@@ -370,7 +370,7 @@ BOOL keepAvAudioSessionAlwaysActive = NO;
                     bPlayAudioWhenScreenIsLocked = [playAudioWhenScreenIsLocked boolValue];
                 }
 
-                [self.avSession setCategory:AVAudioSessionCategoryPlayAndRecord error:&err];
+                [self.avSession setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionMixWithOthers error:nil];
                 [self.avSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
                 if (![self.avSession setActive:YES error:&err]) {
                     // other audio with higher priority that does not allow mixing could cause this to fail
